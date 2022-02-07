@@ -17,7 +17,7 @@ jobs:
   test:
     name: cypress-run
     # run: echo "${{ github.event.inputs.tags }}"
-    # if: ${{ github.event.label.name == 'cypress test ready' }} || ${{github.event.pull_request}}
+    if: ${{ github.event.label.name == 'cypress test ready' }} || ${{github.event.pull_request}}
     runs-on: ubuntu-latest
     # strategy:
     #   fail-fast: false
@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Set time
         run: |
-          echo "time=$(date --date="$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> $GITHUB_ENV
+          echo "${{ github.event.inputs.tags }}"
       # - name: Checkout
       #   uses: actions/checkout@v2
 
