@@ -67,9 +67,9 @@ jobs:
     #       retention-days: 1
 
   build:
-
+    # if: ${{ github.event.label.name == 'cypress test ready' }} || ${{github.event.pull_request}}
     runs-on: ubuntu-latest
-
+    needs: [test]
     steps:
     - uses: actions/checkout@v2
 
@@ -82,4 +82,4 @@ jobs:
 
     - name: Set time
       run: |
-        echo "time=$(date --date="$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> $GITHUB_ENV
+        echo ""${{ needs.test.outputs.job-status }}""
