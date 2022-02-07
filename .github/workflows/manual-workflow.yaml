@@ -26,8 +26,11 @@ jobs:
     #     # e.g. [1,2,3]
     #     containers: [1,2,3,4]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Set time
+        run: |
+          echo "time=$(date --date="$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> $GITHUB_ENV
+      # - name: Checkout
+      #   uses: actions/checkout@v2
 
     #   - name: Increase file watchers
     #     run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
