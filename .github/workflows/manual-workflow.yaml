@@ -83,10 +83,10 @@ jobs:
     runs-on: ubuntu-latest
     # needs: [test]
     steps:
-    - name: Download artifact pass_status_job01
-        uses: actions/download-artifact@v1
-        with:
-          name: pass_status_job02
+    # - name: Download artifact pass_status_job01
+    #     uses: actions/download-artifact@v1
+    #     with:
+    #       name: pass_status_job02
 
     # - name: Set the statuses of Job 01 and Job 02 as output parameters
     #     id: set_outputs
