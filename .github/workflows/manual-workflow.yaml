@@ -29,6 +29,10 @@ jobs:
       - name: Set time
         run: |
           echo "${{ github.event.inputs.tags }}"
+
+      - name: Job Status
+        outputs:
+          job-status: ${{ job.status }}
       
       # - name: Create file status_job02.txt and write the job status into it
       #   if: always()
