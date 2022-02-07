@@ -16,7 +16,7 @@ jobs:
 
   test:
     name: cypress-run
-    run: echo "${{ github.event.inputs.tags }}"
+    # run: echo "${{ github.event.inputs.tags }}"
     # if: ${{ github.event.label.name == 'cypress test ready' }} || ${{github.event.pull_request}}
     runs-on: ubuntu-latest
     # strategy:
