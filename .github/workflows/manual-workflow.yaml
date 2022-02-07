@@ -108,6 +108,6 @@ jobs:
 
     - name: Set time
       run: |
-        echo "${{ needs.test.outputs }}"
+        echo "${{ needs.test.outputs.job-status }}"
         echo "${{github.jobs[0].conclusion}}"
         
