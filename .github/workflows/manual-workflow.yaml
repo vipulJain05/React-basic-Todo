@@ -82,4 +82,4 @@ jobs:
 
     - name: Set time
       run: |
-        echo ""${{ needs.test.outputs.job-status }}""
+        echo "${{ needs.test.outputs.job-status }}"
