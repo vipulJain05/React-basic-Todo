@@ -29,6 +29,18 @@ jobs:
       - name: Set time
         run: |
           echo "${{ github.event.inputs.tags }}"
+      
+      - name: Create file status_job02.txt and write the job status into it
+        if: always()
+        run: |
+          echo ${{ job.status }} > status_job02.txt
+
+      - name: Upload file status_job02.txt as an artifact
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: pass_status_job02
+          path: status_job02.txt
       # - name: Checkout
       #   uses: actions/checkout@v2
 
@@ -71,6 +83,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
+    - name: Download artifact pass_status_job01
+        uses: actions/download-artifact@v1
+        with:
+          name: pass_status_job01
+
+    - name: Set the statuses of Job 01 and Job 02 as output parameters
+        id: set_outputs
+        run: |
+          echo "::set-output name=status_job02::$(<pass_status_job02/status_job02.txt)"
+
+      - name: Show the values of the outputs
+        run: |
+          echo "status_job02 = ${{ steps.set_outputs.outputs.status_job02 }}"
+
     - uses: actions/checkout@v2
 
     # - name: Configure AWS credentials
