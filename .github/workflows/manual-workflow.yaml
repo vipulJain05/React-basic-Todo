@@ -11,7 +11,7 @@ on:
         description: 'Run Cypress Test'
         required: false 
         type: boolean
-        default: "true"
+        default: true
 jobs:
 
   test:
