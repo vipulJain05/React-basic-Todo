@@ -45,11 +45,15 @@ jobs:
 
   build:
     name: cypress-run1
+    needs: test
     # run: echo "${{ github.event.inputs.tags }}"
-    if: ${{ github.event.inputs.tags != 'true' }}
+    if: always()
     runs-on: ubuntu-latest
     # needs: [test]
     steps:
+      - name: print name
+        run: | 
+         echo "${{ needs.test.result }}"
       - name: Download artifact pass_status_job01
         uses: actions/download-artifact@v1
         with:
