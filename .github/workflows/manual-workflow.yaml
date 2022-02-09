@@ -47,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     # needs: [test]
     needs: test
+    if: ${{ github.event.inputs.tags == 'false' }}
     name: Job 03
     steps:
       - name: Download artifact pass_status_job01
