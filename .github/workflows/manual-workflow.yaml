@@ -8,10 +8,10 @@ on:
         required: true
         default: "test"
       tags:
-        description: 'Run Cypress Test'
-        required: false 
+        description: "Whether to foo"
         type: boolean
-        default: true
+        required: true
+        default: "false"
 jobs:
 
   test:
