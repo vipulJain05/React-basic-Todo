@@ -45,7 +45,7 @@ jobs:
   build:
     name: test
     needs: test
-    if: ${{ github.event.inputs.tags == 'true' }}
+    if: ${{ github.event.inputs.tags != 'true' }}
     runs-on: ubuntu-latest
     # needs: [test]
     steps:
