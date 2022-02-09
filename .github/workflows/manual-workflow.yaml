@@ -46,7 +46,7 @@ jobs:
     name: cypress-run1
     needs: test
     # run: echo "${{ github.event.inputs.tags }}"
-    if: always()
+    if: always() && (needs.test.result == 'skipped' || needs.test.result == 'success')
     runs-on: ubuntu-latest
     # needs: [test]
     steps:
