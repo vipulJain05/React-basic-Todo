@@ -29,6 +29,9 @@ jobs:
       - name: Set time
         run: |
           echo "${{ github.event.inputs.tags1 }}"
+          
+      - name: failed
+        run: python3 test.py
 
       - name: Create file status_job01.txt and write the job status into it
         if: always()
