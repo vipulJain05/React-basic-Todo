@@ -16,7 +16,6 @@ jobs:
 
   test:
     name: cypress-run
-    run: echo "${{ github.event.inputs.tags }}"
     if: ${{ github.event.inputs.tags == 'true' }}
     runs-on: ubuntu-latest
     strategy:
