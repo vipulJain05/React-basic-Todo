@@ -8,16 +8,16 @@ on:
         required: true
         default: "test"
       tags:
-        description: "Whether to foo"
+        description: "Run Cypress Test"
         type: boolean
         required: true
-        default: "false"
+        default: "true"
 jobs:
 
   test:
     name: cypress-run
+    run: echo "${{ github.event.inputs.tags }}"
     if: ${{ github.event.inputs.tags == 'true' }}
-    # run: echo "${{ github.event.inputs.tags }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -26,48 +26,59 @@ jobs:
         # e.g. [1,2,3]
         containers: [1,2,3,4]
     steps:
-      - name: Set time
-        run: |
-          echo "${{ github.event.inputs.tags1 }}"
-          
-      - name: failed
-        run: python3 test.py
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Create file status_job01.txt and write the job status into it
-        if: always()
-        run: |
-          echo ${{ job.status }} > status_job01.txt
+      - name: Increase file watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: Upload file status_job01.txt as an artifact
-        if: always()
-        uses: actions/upload-artifact@v1
+      - name: Curate cypress config
+        run: mv packages/web-app/cypress.ghactions.json packages/web-app/cypress.json
+
+
+      - name: Cypress run 2
+        uses: cypress-io/github-action@v2
+
         with:
-          name: pass_status_job01
-          path: status_job01.txt
+          start: "yarn ws:app start:ghactions"
+          wait-on: "http://localhost:3000"
+
+          # hardcoded timeout to wait for 400 seconds before pinging local server
+          wait-on-timeout: 400
+          command: yarn ws:app cy:run 
+
+      - name: Upload ss
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: /home/runner/work/mmc-react-web/mmc-react-web/packages/web-app/cypress/screenshots/**
+          retention-days: 1
+      
+      - name: Upload Videos
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-videos
+          path: /home/runner/work/mmc-react-web/mmc-react-web/packages/web-app/cypress/videos/**
+          retention-days: 1
 
   build:
-    name: cypress-run1
+    name: Build process
     needs: test
-    # run: echo "${{ github.event.inputs.tags }}"
     if: always() && (needs.test.result == 'skipped' || needs.test.result == 'success')
     runs-on: ubuntu-latest
-    # needs: [test]
+
     steps:
-      - name: print name
-        run: | 
-         echo "${{ needs.test.result }}"
-      - name: Download artifact pass_status_job01
-        uses: actions/download-artifact@v1
-        with:
-          name: pass_status_job01
+    - uses: actions/checkout@v2
 
-      - name: Set the statuses of Job 01 and Job 02 as output parameters
-        id: set_outputs
-        run: |
-          echo "::set-output name=status_job01::$(<pass_status_job01/status_job01.txt)"
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: us-east-2
 
-      - name: Show the values of the outputs
-        run: |
-          # using the syntax steps.<step_id>.outputs.<output_name> to access the output parameters
-          echo "status_job01 = ${{ steps.set_outputs.outputs.status_job01 }}"
-    
+    - name: Set time
+      run: |
+        echo "time=$(date --date="$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> $GITHUB_ENV
